@@ -84,7 +84,7 @@ public class MiniWalLogFiles extends MiniWalLog {
                 Thread.sleep(1);
                 writer = writers[fileIndex];
                 if (writer == null) {
-                    String filePath = "d:\\minibase\\wal\\" + rounds + "-" + fileIndex + ".wal";
+                    String filePath = Conf.LOG_PATH + rounds + "-" + fileIndex + ".wal";
                     writer = new FileWriter(new File(filePath));
                     writers[fileIndex] = writer;
                 }
@@ -121,7 +121,7 @@ public class MiniWalLogFiles extends MiniWalLog {
 //                Thread.sleep(1);
                 writer = writers[fileIndex];
                 if (writer == null) {
-                    String filePath = "d:\\minibase\\wal\\" + rounds + "-" + fileIndex + ".wal";
+                    String filePath = Conf.LOG_PATH + rounds + "-" + fileIndex + ".wal";
                     writer = new FileWriter(new File(filePath));
                     writers[fileIndex] = writer;
                 }
@@ -151,12 +151,12 @@ public class MiniWalLogFiles extends MiniWalLog {
                 writers[i] = null;
             }
         }
-        File fileD = new File("d:\\minibase\\wal");
+        File fileD = new File(Conf.LOG_PATH);
         File[] files = fileD.listFiles();
         if (!Objects.isNull(files)) {
             for (File file : files) {
                 if (file.getPath().contains(".wal")) {
-                    file.renameTo(new File("d:\\minibase\\walbak\\" + file.getName()));
+                    file.renameTo(new File(Conf.LOG_BAK_PATH + file.getName()));
                 }
             }
         }

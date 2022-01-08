@@ -40,7 +40,7 @@ public class MiniWalLogQueue extends MiniWalLog {
             KeyValue keyValue = lazyWriteQueue.poll();
             Objects.requireNonNull(keyValue);
             if (writer == null) {
-                String filePath = "d:\\minibase\\wal\\" + rounds + "-.wal";
+                String filePath = Conf.LOG_PATH + rounds + "-.wal";
                 writer = new FileWriter(new File(filePath));
             }
             String key = new String(keyValue.getKey());
@@ -76,12 +76,12 @@ public class MiniWalLogQueue extends MiniWalLog {
             }
             writer = null;
         }
-        File fileD = new File("d:\\minibase\\wal");
+        File fileD = new File(Conf.LOG_PATH);
         File[] files = fileD.listFiles();
         if (!Objects.isNull(files)) {
             for (File file : files) {
                 if (file.getPath().contains(".wal")) {
-                    file.renameTo(new File("d:\\minibase\\walbak\\" + file.getName()));
+                    file.renameTo(new File(Conf.LOG_BAK_PATH + file.getName()));
                 }
             }
         }
