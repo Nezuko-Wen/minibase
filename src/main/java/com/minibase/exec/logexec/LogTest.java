@@ -1,5 +1,9 @@
 package com.minibase.exec.logexec;
 
+import com.minibase.exec.Bytes;
+import com.minibase.exec.KeyValue;
+
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -9,15 +13,39 @@ import java.util.concurrent.CountDownLatch;
 public class LogTest {
     public static int fileNum = 5000;
     public static int threadNum = 16;
+    public static MiniSkipList miniSkipList = new MiniSkipList();
     public static void main(String[] args) throws InterruptedException {
 
-        long start = System.currentTimeMillis();
-        testQueue();
-        long end = System.currentTimeMillis();
-        System.out.println((end - start));
-        while (true) {
+//        long start = System.currentTimeMillis();
+//        testQueue();
+//        long end = System.currentTimeMillis();
+//        System.out.println((end - start));
+//        while (true) {
+//
+//        }
 
-        }
+//
+        new Thread(()->{
+            try {
+                Thread.sleep(1000);
+                miniSkipList = null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+        Thread thread = new Thread(() -> {
+            if (miniSkipList != null) {
+                try {
+                    Thread.sleep(10000);
+                    System.out.println(miniSkipList.getState());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        thread.join();
+
     }
 
     static void testFilesClear() throws InterruptedException {
@@ -63,7 +91,6 @@ public class LogTest {
         @Override
         public void run() {
             for (int i = 0; i < fileNum; i++) {
-                miniWalLog.write(new KeyValue(Thread.currentThread().getName(), "key".getBytes(), "value".getBytes(), Op.Put));
             }
             countDownLatch.countDown();
         }
@@ -80,7 +107,6 @@ public class LogTest {
         @Override
         public void run() {
             for (int i = 0; i < fileNum; i++) {
-                miniWalLogQueue.write(new KeyValue(Thread.currentThread().getName(), "key".getBytes(), "value".getBytes(), Op.Put));
             }
         }
     }

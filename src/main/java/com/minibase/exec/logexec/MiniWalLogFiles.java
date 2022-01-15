@@ -1,5 +1,7 @@
 package com.minibase.exec.logexec;
 
+import com.minibase.exec.KeyValue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -59,8 +61,6 @@ public class MiniWalLogFiles extends MiniWalLog {
         int seqId;
         synchronized (this) {
             //这里是实际要写日志的地方，应该先到先写，所以在进入分段锁之前要保证顺序
-            seqId = dataIndex.incrementAndGet() - 1;
-            keyValue.setSeqId(seqId);
             boolean lazyWrite = false;
             while (flushing) {
                 System.out.println("日志清理中......");
@@ -90,9 +90,6 @@ public class MiniWalLogFiles extends MiniWalLog {
                 }
                 String key = new String(keyValue.getKey());
                 String value = new String(keyValue.getValue());
-                Op op = keyValue.getOp();
-                String line = String.format("%s|%s|%s|%s|%s\n", Thread.currentThread().getName(), key, value, seqId, op.getValue());
-                writer.append(line);
                 writer.flush();
                 return keyValue;
             } catch (IOException | InterruptedException e) {
@@ -127,9 +124,6 @@ public class MiniWalLogFiles extends MiniWalLog {
                 }
                 String key = new String(keyValue.getKey());
                 String value = new String(keyValue.getValue());
-                Op op = keyValue.getOp();
-                String line = String.format("%s|%s|%s|%s|%s\n", keyValue.getThreadName(), key, value, keyValue.getSeqId(), op.getValue());
-                writer.append(line);
                 writer.flush();
             } catch (IOException e) {
                 e.printStackTrace();

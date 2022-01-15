@@ -20,7 +20,7 @@ public class TestMiniBase {
 
   @Before
   public void setUp() {
-    dataDir = "target/minihbase-" + System.currentTimeMillis();
+    dataDir = "D:\\minibase\\wal" + System.currentTimeMillis();
     File f = new File(dataDir);
     Assert.assertTrue(f.mkdirs());
   }
@@ -50,10 +50,10 @@ public class TestMiniBase {
           } catch (IOException e) {
             // Memstore maybe full, so let's retry.
             retries++;
-            try {
-              Thread.sleep(100 * retries);
-            } catch (InterruptedException e1) {
-            }
+//            try {
+//              Thread.sleep(100 * retries);
+//            } catch (InterruptedException e1) {
+//            }
           }
         }
       }

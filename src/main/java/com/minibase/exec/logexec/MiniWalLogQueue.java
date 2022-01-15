@@ -1,5 +1,7 @@
 package com.minibase.exec.logexec;
 
+import com.minibase.exec.KeyValue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -43,11 +45,7 @@ public class MiniWalLogQueue extends MiniWalLog {
                 String filePath = Conf.LOG_PATH + rounds + "-.wal";
                 writer = new FileWriter(new File(filePath));
             }
-            String key = new String(keyValue.getKey());
-            String value = new String(keyValue.getValue());
-            Op op = keyValue.getOp();
-            String line = String.format("%s|%s|%s|%s|%s\n", keyValue.getThreadName(), key, value, keyValue.getSeqId(), op.getValue());
-            writer.append(line);
+            //写入日志文件
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -55,7 +53,6 @@ public class MiniWalLogQueue extends MiniWalLog {
     }
 
     public synchronized KeyValue write(KeyValue keyValue) {
-        keyValue.setSeqId(dataIndex.incrementAndGet() - 1);
         lazyWriteQueue.offer(keyValue);
         if (state == 0) {
             state = 1;

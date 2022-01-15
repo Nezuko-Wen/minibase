@@ -1,5 +1,7 @@
 package com.minibase.exec.logexec;
 
+import com.minibase.exec.KeyValue;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class MiniWalLog {
