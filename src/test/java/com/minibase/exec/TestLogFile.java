@@ -1,54 +1,41 @@
-package com.minibase.exec.logexec;
+package com.minibase.exec;
 
-import com.minibase.exec.Bytes;
-import com.minibase.exec.KeyValue;
+import com.minibase.exec.logexec.*;
+import org.junit.Test;
 
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
  * @author zouzhiwen
- * @date 2022/1/5 11:00
+ * @date 2022/1/25 17:38
  */
-public class LogTest {
+public class TestLogFile {
+
     public static int fileNum = 5000;
     public static int threadNum = 16;
-    public static MiniSkipList miniSkipList = new MiniSkipList();
-    public static void main(String[] args) throws InterruptedException {
 
-//        long start = System.currentTimeMillis();
-//        testQueue();
-//        long end = System.currentTimeMillis();
-//        System.out.println((end - start));
-//        while (true) {
-//
-//        }
-
-//
-        new Thread(()->{
-            try {
-                Thread.sleep(1000);
-                miniSkipList = null;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-        Thread thread = new Thread(() -> {
-            if (miniSkipList != null) {
-                try {
-                    Thread.sleep(10000);
-                    System.out.println(miniSkipList.getState());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-        thread.join();
-
+    @Test
+    public void testQueue() {
+        long start = System.currentTimeMillis();
+        queue();
+        long end = System.currentTimeMillis();
+        System.out.println((end - start));
     }
 
-    static void testFilesClear() throws InterruptedException {
+    @Test
+    public void testFiles() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        files();
+        long end = System.currentTimeMillis();
+        System.out.println((end - start));
+    }
+
+    @Test
+    public void testFilesClear() throws InterruptedException {
+        filesClear();
+    }
+
+    void filesClear() throws InterruptedException {
         MiniWalLog miniWalLogFiles = new MiniWalLogFiles(threadNum);
         CountDownLatch fileDownLaunch = new CountDownLatch(threadNum);
         for (int i = 0; i < threadNum; i ++) {
@@ -60,7 +47,7 @@ public class LogTest {
         fileDownLaunch.await();
     }
 
-    static void testFiles() throws InterruptedException {
+    void files() throws InterruptedException {
         MiniWalLog miniWalLogFiles = new MiniWalLogFiles(threadNum);
         CountDownLatch fileDownLaunch = new CountDownLatch(threadNum);
         for (int i = 0; i < threadNum; i ++) {
@@ -70,7 +57,7 @@ public class LogTest {
         fileDownLaunch.await();
     }
 
-    static void testQueue() throws InterruptedException {
+    void queue() {
         MiniWalLog miniWalLogQueue = new MiniWalLogQueue();
         for (int i = 0; i < threadNum; i ++) {
             Thread thread = new Thread(new WriteRunQueue(miniWalLogQueue));
@@ -78,7 +65,7 @@ public class LogTest {
         }
     }
 
-    static class WriteRunFiles implements Runnable {
+    class WriteRunFiles implements Runnable {
 
         MiniWalLog miniWalLog;
         CountDownLatch countDownLatch;
@@ -96,7 +83,7 @@ public class LogTest {
         }
     }
 
-    static class WriteRunQueue implements Runnable {
+    class WriteRunQueue implements Runnable {
 
         MiniWalLog miniWalLogQueue;
 
@@ -107,10 +94,11 @@ public class LogTest {
         @Override
         public void run() {
             for (int i = 0; i < fileNum; i++) {
+
             }
         }
     }
-    static class ClearRun implements Runnable {
+    class ClearRun implements Runnable {
 
         MiniWalLog miniWalLogQueue;
 
